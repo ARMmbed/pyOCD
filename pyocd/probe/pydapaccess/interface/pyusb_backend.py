@@ -334,6 +334,11 @@ class FindDap(object):
         except (IndexError, NotImplementedError, ValueError, UnicodeDecodeError) as error:
             LOG.debug("Error accessing USB device (VID=%04x PID=%04x): %s", dev.idVendor, dev.idProduct, error)
             return False
+        except ValueError as error:
+            # Ignore devices causing ValueError, these are most likely caused by langid issues.
+            LOG.warning("ValueError accessing USB device (VID=%04x PID=%04x): %s",
+                        dev.idVendor, dev.idProduct, error)
+            return False
 
         if cmsis_dap_interface is None:
             return False
